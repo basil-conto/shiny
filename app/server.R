@@ -2,7 +2,7 @@ library(shiny)
 
 shinyServer(function(input, output){
 
-  # Choose continuous distribution type
+  # retrieve data from different continuous distribution
   dat <- reactive({
     dist <- switch(input$dist,
                    norm = rnorm,
@@ -27,7 +27,7 @@ shinyServer(function(input, output){
            main = paste('r', dist, '(', n, ')', sep=''), prob = TRUE)
 
 
-      # Draw density curve?
+      # Draw density curve depending on user's choice
       if (input$density) {
         lines(density(dat(), adjust = input$bw), lwd = 2)
       }
@@ -41,7 +41,7 @@ shinyServer(function(input, output){
       hist(bindat, col = "orange",
            main = paste('r', dist, '(', n, ')', sep=''), prob = TRUE)
 
-      # Draw density curve?
+      # Draw density curve if 
       if (input$density) {
         lines(density(bindat, adjust = input$bw), lwd = 2)
       }
@@ -54,7 +54,7 @@ shinyServer(function(input, output){
       hist(poisdat, col = "orange",
            main = paste('r', dist, '(', n, ')', sep=''),prob = TRUE)
 
-      # Draw density curve?
+      # Draw density curve depending on user's choice
       if (input$density) {
         lines(density(poisdat, adjust = input$bw), lwd = 2)
       }
