@@ -15,19 +15,22 @@ shinyServer(function(input,output){
     psucc <- input$psucc
     lambda <- input$lambda
     
+    
     if(input$distType=="Continuous"){
-      hist(dat(),col="orange")
-      lines(density(dat(),adjust=input$bw),lwd=2)
+      hist(dat(),col="orange",xlab="Observations",main=paste('r', dist, '(', n, ')', sep=''), prob=TRUE)
+      if(input$density == TRUE) lines(density(dat(),adjust=input$bw),lwd=2)
     }
     else{
       if(input$dist_disc=="bino"){
         bindat<-rbinom(n,ntrials,psucc)         
-        hist(bindat,col="orange")
+        hist(bindat,col="orange", main=paste('r', dist, '(', n, ')', sep=''), prob=TRUE)
+        if(input$density == TRUE) lines(density(bindat,adjust=input$bw),lwd=2)
       }
       else
       {
         poisdat<-rpois(n,lambda)         
-        hist(poisdat,col="orange")
+        hist(poisdat,col="orange", main=paste('r', dist, '(', n, ')', sep=''),prob=TRUE)
+        if(input$density == TRUE) lines(density(poisdat,adjust=input$bw),lwd=2)
       }
     }
   })
