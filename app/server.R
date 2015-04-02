@@ -1,19 +1,42 @@
 library(shiny)
 
-# Server logic required to draw histogram
-shinyServer(function(input, output) {
+shinyServer(function(input,output){
+  dat <- reactive({
+    dist <- switch(input$dist,norm=rnorm, unif=runif, exp=rexp)
+    
+    dist(input$n)
+  })
 
-  # Expression that generates a histogram. The expression is wrapped in a call
-  # to renderPlot() to indicate that:
-  #
-  # * it is reactive, i.e. it should re-execute automatically when inputs change
-  # * its input type is a plot
-
-  output$distPlot <- renderPlot({
-    x    <- faithful[, 2]   # Old Faithful Geyser data
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    # Draw histogram with specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  
+  output$plot <- renderPlot({
+    dist <- input$dist
+    n <- input$n
+    ntrials <- input$ntrials
+    psucc <- input$psucc
+    lambda <- input$lambda
+    
+    if(input$distType=="Continuous"){
+      hist(dat(),col="orange")
+      lines(density(dat(),adjust=input$bw),lwd=2)
+    }
+    else{
+      if(input$dist_disc=="bino"){
+        bindat<-rbinom(n,ntrials,psucc)         
+        hist(bindat,col="orange")
+      }
+      else
+      {
+        poisdat<-rpois(n,lambda)         
+        hist(poisdat,col="orange")
+      }
+    }
+  })
+  
+  output$summary <- renderPrint({
+    summary(dat())
+  })
+  
+  output$table <- renderTable({
+    data.frame(x=dat())
   })
 })
